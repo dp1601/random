@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quay Số Ngẫu Nhiên</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #result {
+            font-size: 9em; /* Tăng kích thước số */
+            margin: 20px;
+            padding: 50px;
+            border: 5px solid #007bff;
+            border-radius: 10px;
+            background-color: #ffffff;
+            color: #007bff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        input {
+            margin: 5px;
+            padding: 10px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            width: 80px; /* Tăng chiều rộng của ô nhập */
+            text-align: center;
+            font-size: 1.2em; /* Tăng kích thước chữ trong ô nhập */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em; /* Tăng kích thước chữ trên nút */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .input-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quay Số Ngẫu Nhiên - DPhat</h1>
+    <div class="input-container">
+        <input type="number" id="min" placeholder="Min" value="1">
+        <input type="number" id="max" placeholder="Max" value="100">
+    </div>
+    <div id="result">0</div>
+    <button onclick="spin()">Quay Số</button>
+
+    <!-- Thêm âm thanh -->
+    <audio id="spinSound" src="spin.mp3" loop></audio>
+    <audio id="resultSound" src="sound.mp3"></audio>
+
+    <script>
+        function spin() {
+            const min = parseInt(document.getElementById('min').value) || 1; // số nhỏ nhất
+            const max = parseInt(document.getElementById('max').value) || 100; // số lớn nhất
+            const resultElement = document.getElementById('result');
+            const spinSound = document.getElementById('spinSound');
+            const resultSound = document.getElementById('resultSound');
+            let interval;
+
+            if (min >= max) {
+                alert("Giá trị tối thiểu phải nhỏ hơn giá trị tối đa.");
+                return;
+            }
+
+            spinSound.play();  
+            let spinCount = 0;
+            interval = setInterval(() => {
+                let randomSpin;
+                do {
+                    randomSpin = Math.floor(Math.random() * (max - min + 1)) + min;
+                } while (randomSpin === 22 || randomSpin === 28 || randomSpin === 31);  
+                resultElement.textContent = randomSpin;
+                spinCount++;
+                if (spinCount > 25) {  
+                    clearInterval(interval);
+                    let finalNumber;
+                    do {
+                        finalNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                    } while (finalNumber === 22 || finalNumber === 28 || finalNumber === 31);  
+                    setTimeout(() => {
+                        resultElement.textContent = finalNumber;
+                        spinSound.pause();  
+                        spinSound.currentTime = 0;  
+                        resultSound.play();  
+                    }, 300);  
+                }
+            }, 100);  
+        }
+    </script>
+</body>
+</html>
