@@ -13,6 +13,7 @@
             justify-content: center;
             height: 100vh;
             background-color: #f0f0f0;
+            position: relative; /* Để có thể định vị checkbox */
         }
         h1 {
             margin-bottom: 20px;
@@ -55,6 +56,11 @@
             justify-content: center;
             margin-bottom: 20px;
         }
+        #checkboxContainer {
+            position: absolute; /* Định vị tuyệt đối */
+            top: 10px; /* Cách cạnh trên 10px */
+            right: 10px; /* Cách cạnh phải 10px */
+        }
     </style>
 </head>
 <body>
@@ -66,17 +72,24 @@
     <div id="result">0</div>
     <button onclick="spin()">Quay Số</button>
 
+    <div id="checkboxContainer">
+        <input type="checkbox" id="forceSix">
+        <label for="forceSix"></label>
+    </div>
+
     <!-- Thêm âm thanh -->
     <audio id="spinSound" src="spin.mp3" loop></audio>
     <audio id="resultSound" src="sound.mp3"></audio>
 
     <script>
+        // Hàm quay số
         function spin() {
-            const min = parseInt(document.getElementById('min').value) || 1; // số nhỏ nhất
-            const max = parseInt(document.getElementById('max').value) || 100; // số lớn nhất
+            const min = parseInt(document.getElementById('min').value) || 1;
+            const max = parseInt(document.getElementById('max').value) || 100;
             const resultElement = document.getElementById('result');
             const spinSound = document.getElementById('spinSound');
             const resultSound = document.getElementById('resultSound');
+            const forceSix = document.getElementById('forceSix').checked; // Kiểm tra checkbox
             let interval;
 
             if (min >= max) {
@@ -96,9 +109,15 @@
                 if (spinCount > 25) {  
                     clearInterval(interval);
                     let finalNumber;
-                    do {
-                        finalNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-                    } while (finalNumber === 22 || finalNumber === 28 || finalNumber === 31);  
+
+                    if (forceSix) {
+                        finalNumber = 6; // Nếu checkbox được tick, đặt kết quả cuối là 6
+                    } else {
+                        do {
+                            finalNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                        } while (finalNumber === 22 || finalNumber === 28 || finalNumber === 31);  
+                    }
+
                     setTimeout(() => {
                         resultElement.textContent = finalNumber;
                         spinSound.pause();  
@@ -108,6 +127,14 @@
                 }
             }, 100);  
         }
+
+        // Hàm xử lý sự kiện phím
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'F2' || event.key === '.' ) {
+                const checkbox = document.getElementById('forceSix');
+                checkbox.checked = !checkbox.checked; // Đổi trạng thái của checkbox
+            }
+        });
     </script>
 </body>
 </html>
